@@ -25,12 +25,11 @@
               placeholder="Selecione uma cidade (Ex: Belo Horizonte, Curitiba...)"
               :rules="[(val) => (val && val.length > 0) || 'Campo Obrigatório']"
             /> -->
-            {{ selectHoteis[0] }}
             <q-form ref="refSelectCidade">
               <q-select
                 outlined
                 emit-value
-                v-model="city"
+                v-model="searchHotelCity"
                 use-input
                 hide-selected
                 fill-input
@@ -74,7 +73,7 @@
 
             <q-breadcrumbs-el label="Início" />
             <q-breadcrumbs-el label="Hotéis" />
-            <q-breadcrumbs-el :label="'Hospedagem em ' + city" />
+            <q-breadcrumbs-el :label="'Hospedagem em ' + searchHotelCity" />
           </q-breadcrumbs>
         </div>
         <div>
@@ -155,160 +154,16 @@
           </q-btn-dropdown>
         </div>
       </div>
-      <div class="col-12 col-md-12 q-mb-md">
-        <q-card class="my-card" flat>
-          <q-card-section horizontal style="height: 400px">
-            <!-- <q-img
-              class="col-4"
-              src="https://cdn.quasar.dev/img/parallax2.jpg"
-            /> -->
-            <q-carousel
-              animated
-              class="col-4"
-              v-model="slide"
-              arrows
-              transition-prev="slide-right"
-              transition-next="slide-left"
-              control-type="push"
-              control-color="white"
-              control-text-color="grey-8"
-              infinite
-            >
-              <q-carousel-slide
-                :name="1"
-                img-src="https://cdn.quasar.dev/img/mountains.jpg"
-              />
-              <q-carousel-slide
-                :name="2"
-                img-src="https://cdn.quasar.dev/img/parallax1.jpg"
-              />
-              <q-carousel-slide
-                :name="3"
-                img-src="https://cdn.quasar.dev/img/parallax2.jpg"
-              />
-              <q-carousel-slide
-                :name="4"
-                img-src="https://cdn.quasar.dev/img/quasar.jpg"
-              />
-            </q-carousel>
-            <q-card-section class="text-wrap col-5">
-              <div class="row">
-                <span class="text-h5 text-grey-7">Meliá Paulista</span>
-              </div>
-              <div class="row">
-                <span class="text-subtitle1 text-grey-5"
-                  >São Paulo, Paraíso, A 2,97 km do centro</span
-                >
-              </div>
-              <div class="row no-wrap items-start q-my-md">
-                <span class="text-caption text-grey q-mr-sm">8.3</span>
-                <q-rating
-                  size="18px"
-                  readonly
-                  v-model="stars"
-                  :max="5"
-                  color="yellow"
-                />
-                <span class="q-mx-sm">|</span>
-                <div class="q-gutter-x-xs">
-                  <q-icon name="wifi" size="xs" color="grey-6" />
-                  <q-icon name="ac_unit" size="xs" color="grey-6" />
-                  <q-icon name="pool" size="xs" color="grey-6" />
-                  <q-icon name="fitness_center" size="xs" color="grey-6" />
-                </div>
-              </div>
-              <div class="col-12 col-md-12">
-                <q-badge color="grey" class="q-px-md q-py-xs">
-                  Reembolsável
-                </q-badge>
-              </div>
-            </q-card-section>
-            <q-separator
-              vertical
-              style="background-color: #f2f2f2"
-              size="3px"
-            />
-            <q-card-section class="col-3">
-              <div class="row">
-                <span class="text-subtitle2 text-grey-5">A partir de</span>
-              </div>
-              <div class="row q-my-xs">
-                <span class="text-grey-7"
-                  >R$<span class="text-h5">1.332,00</span></span
-                >
-              </div>
-              <div class="row">
-                <span class="text-subtitle2 text-grey-5">R$444,00/noite</span>
-              </div>
-              <div class="row">
-                <span class="text-subtitle2 text-grey-6"
-                  >Impostos inclusos</span
-                >
-              </div>
-              <div class="row q-mt-lg">
-                <q-btn
-                  no-caps
-                  size="15px"
-                  class="q-btn-action"
-                  unelevated
-                  rounded
-                  color="light-blue"
-                  label="Selecionar"
-                  @click="openHotelDetails()"
-                />
-              </div>
-            </q-card-section>
-          </q-card-section>
-        </q-card>
+      <div
+        class="col-12 col-md-12 q-mb-md q-gutter-y-md"
+        v-if="selectedHoteis.length > 0"
+      >
+        <template v-for="(hotel, index) in selectedHoteis" :key="index">
+          <CardHotel :hoteis="hotel" :openModal="openHotelDetails" />
+        </template>
       </div>
       <q-dialog v-model="cardDetails" position="right" maximized>
-        <q-card class="my-card">
-          <q-card-section class="q-pt-xs">
-            <div class="text-overline">Overline</div>
-            <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
-            <div class="text-caption text-grey">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </div>
-          </q-card-section>
-          <q-img src="https://cdn.quasar.dev/img/chicken-salad.jpg" />
-
-          <q-card-section>
-            <q-btn
-              fab
-              color="primary"
-              icon="place"
-              class="absolute"
-              style="top: 0; right: 12px; transform: translateY(-50%)"
-            />
-
-            <div class="row no-wrap items-center">
-              <div class="col text-h6 ellipsis">Cafe Basilico</div>
-              <div
-                class="col-auto text-grey text-caption q-pt-md row no-wrap items-center"
-              >
-                <q-icon name="place" />
-                250 ft
-              </div>
-            </div>
-
-            <q-rating v-model="stars" :max="5" size="32px" />
-          </q-card-section>
-
-          <q-card-section class="q-pt-none">
-            <div class="text-subtitle1">$・Italian, Cafe</div>
-            <div class="text-caption text-grey">
-              Small plates, salads & sandwiches in an intimate setting.
-            </div>
-          </q-card-section>
-
-          <q-separator />
-
-          <q-card-actions align="right">
-            <q-btn v-close-popup flat color="primary" label="Reserve" />
-            <q-btn v-close-popup flat color="primary" round icon="event" />
-          </q-card-actions>
-        </q-card>
+        <CardHotelDetails />
       </q-dialog>
     </div>
     <!-- <img
@@ -320,9 +175,17 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import JsonCidades from "../utils/place.json";
 import JsonHoteis from "../utils/hotel.json";
+import { storeToRefs } from "pinia";
+import { useHoteisStore } from "../stores/hoteis/hoteis";
+import utils from "../utils/utils.js";
+import CardHotel from "../components/CardHotel.vue";
+import CardHotelDetails from "../components/CardHotelDetails.vue";
+
+const { selectedHoteis } = storeToRefs(useHoteisStore());
+const hoteisStore = useHoteisStore();
 
 const cardDetails = ref(false);
 const refSelectCidade = ref("");
@@ -331,27 +194,7 @@ const slide = ref(1);
 const stars = ref(1);
 const filterBy = ref("Recomendados");
 const name = ref("");
-const city = ref("");
 const selectedCity = ref("");
-const selectHoteis = ref([]);
-// const stringOptions = [
-//   {
-//     label: "Google",
-//     value: "goog",
-//   },
-//   {
-//     label: "Facebook",
-//     value: "fb",
-//   },
-//   {
-//     label: "Apple",
-//     value: "app",
-//   },
-//   {
-//     label: "Insta",
-//     value: "ig",
-//   },
-// ];
 
 const filteredOptions = ref([]);
 
@@ -365,17 +208,32 @@ const selectCidades = computed(() => {
   });
 });
 
+const searchHotelCity = computed({
+  get() {
+    return hoteisStore.searchHotelCity;
+  },
+  set(value) {
+    hoteisStore.setSearchHotelCity(value);
+  },
+});
+
+onMounted(() => {
+  if (selectedHoteis.value.length === 0) {
+    hoteisStore.setSearchHotelCity("");
+  }
+});
+
 const buscarHoteisCidade = async () => {
   const isValid = await refSelectCidade.value.validate();
   if (!isValid) return;
   selectedCity.value = filteredOptions.value.filter(
-    (c) => c.value === city.value
+    (c) => c.value === searchHotelCity.value
   )[0];
-  debugger;
-  selectHoteis.value = JsonHoteis.filter(
-    (c) => c.placeId === selectedCity.value.id
-  )[0].hotels;
-  debugger;
+  hoteisStore.getSelectedHoteis(selectedCity.value);
+
+  // selectedHoteis.value = JsonHoteis.filter(
+  //   (c) => c.placeId === selectedCity.value.id
+  // )[0].hotels;
 };
 
 const filterFn = (val, update, abort) => {
@@ -395,7 +253,8 @@ const filterFn = (val, update, abort) => {
   }, 1500);
 };
 
-const openHotelDetails = () => {
+const openHotelDetails = (hotelId) => {
+  hoteisStore.getHotelDetails(hotelId);
   cardDetails.value = true;
 };
 </script>
