@@ -18,13 +18,6 @@
                 Destino <span class="text-red-9">*</span>
               </span>
             </div>
-            <!-- <q-input
-              outlined
-              v-model="name"
-              lazy-rules
-              placeholder="Selecione uma cidade (Ex: Belo Horizonte, Curitiba...)"
-              :rules="[(val) => (val && val.length > 0) || 'Campo Obrigatório']"
-            /> -->
             <q-form ref="refSelectCidade">
               <q-select
                 outlined
@@ -58,7 +51,11 @@
               size="15px"
               color="light-blue"
               class="q-btn-action"
-              label="Alterar Busca"
+              :label="
+                !searchHotelCity && selectedHoteis.length === 0
+                  ? 'Buscar'
+                  : 'Alterar Busca'
+              "
               @click="buscarHoteisCidade"
             />
           </q-card-actions>
@@ -84,6 +81,7 @@
             flat
             dropdown-icon="expand_more"
             color="light-blue"
+            :disable="selectedHoteis.length === 0"
           >
             <template v-slot:label>
               <div class="row items-center no-wrap">
@@ -135,7 +133,10 @@
           </q-btn-dropdown>
         </div>
       </div>
-      <div class="col-12 col-md-12 q-mb-md" v-if="selectedHoteis.length > 0">
+      <div
+        class="col-12 col-md-12 q-mb-md"
+        v-if="selectedHoteis.length > 0 && realizouBusca"
+      >
         <q-infinite-scroll @load="onLoad" :offset="250" class="q-gutter-y-md">
           <template v-for="(hotel, index) in selectedHoteis" :key="index">
             <CardHotel :hoteis="hotel" :openModal="openHotelDetails" />
@@ -147,22 +148,34 @@
           </template>
         </q-infinite-scroll>
       </div>
+      <div
+        class="col-12 col-md-12 q-mb-md"
+        v-else-if="
+          selectedHoteis.length === 0 && searchHotelCity && realizouBusca
+        "
+      >
+        <q-banner rounded class="bg-white text-center">
+          <div class="flex flex-center content-center">
+            <img
+              src="~assets/noVacancy.jpeg"
+              style="width: 100px; height: 64px"
+            />
+            <span class="text-subtitle1 text-grey-6 q-pl-md"
+              >Não há hoteis disponíveis nessa cidade.</span
+            >
+          </div>
+        </q-banner>
+      </div>
       <q-dialog v-model="cardDetails" position="right" maximized>
         <CardHotelDetails />
       </q-dialog>
     </div>
-    <!-- <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
-    > -->
   </q-page>
 </template>
 
 <script setup>
 import { computed, onMounted, ref, watch } from "vue";
 import JsonCidades from "../utils/place.json";
-import JsonHoteis from "../utils/hotel.json";
 import { storeToRefs } from "pinia";
 import { useHoteisStore } from "../stores/hoteis/hoteis";
 import utils from "../utils/utils.js";
@@ -172,13 +185,11 @@ import CardHotelDetails from "../components/CardHotelDetails.vue";
 const { lotesHoteis, selectedHoteis } = storeToRefs(useHoteisStore());
 const hoteisStore = useHoteisStore();
 
+const realizouBusca = ref(false);
+
 const cardDetails = ref(false);
 const hasMoreHotels = ref(true);
 const refSelectCidade = ref("");
-const lorem = ref("Lorem ipsum dolor");
-const slide = ref(1);
-const stars = ref(1);
-const name = ref("");
 
 const filteredOptions = ref([]);
 
@@ -210,13 +221,9 @@ const filterBy = computed({
   },
 });
 
-watch(filterBy, () => {
-  debugger;
+watch(filterBy, (value) => {
   hoteisStore.getSelectedHoteis();
-});
-
-watch(filteredOptions, (value) => {
-  debugger;
+  utils.showLoadingWithMessageTimeout(`Filtrando por ${value}`);
 });
 
 onMounted(() => {
@@ -234,7 +241,6 @@ const setHoteisFunction = () => {
 const onLoad = (index, done, stop) => {
   hoteisStore.setLotesHoteisIndex(index);
   setTimeout(() => {
-    debugger;
     if (lotesHoteis.value[index]) {
       selectedHoteis.value = selectedHoteis.value.concat(
         lotesHoteis.value[index]
@@ -250,6 +256,7 @@ const onLoad = (index, done, stop) => {
 const buscarHoteisCidade = async () => {
   const isValid = await refSelectCidade.value.validate();
   if (!isValid) return;
+  realizouBusca.value = false;
   utils.showLoadingWithMessageTimeout(
     `Carregando hotéis na localidade ${searchHotelCity.value}`
   );
@@ -259,15 +266,10 @@ const buscarHoteisCidade = async () => {
   hoteisStore.setSelectedCity(modelSelectCity);
   hoteisStore.getSelectedHoteis();
   hasMoreHotels.value = true;
-
-  // selectedHoteis.value = JsonHoteis.filter(
-  //   (c) => c.placeId === selectedCity.value.id
-  // )[0].hotels;
+  realizouBusca.value = true;
 };
 
 const filterFn = (val, update, abort) => {
-  // call abort() at any time if you can't retrieve data somehow
-
   setTimeout(() => {
     update(() => {
       if (val === "") {

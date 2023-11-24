@@ -178,7 +178,6 @@
       <span class="text-subtitle1 text-grey-6">{{
         hotelDetails.description
       }}</span>
-      <!-- hotelDetails.description -->
     </q-card-section>
   </q-card>
 </template>

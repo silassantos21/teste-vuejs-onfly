@@ -2,7 +2,7 @@
   "name": "teste-vuejs-onfly",
   "version": "0.0.1",
   "description": "A teste-vuejs-onfly Project",
-  "productName": "Quasar App",
+  "productName": "Hotéis onfly",
   "author": "Silas Santos <silasribeiro11@gmail.com>",
   "private": true,
   "scripts": {

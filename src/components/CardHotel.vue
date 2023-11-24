@@ -178,11 +178,9 @@
 </template>
 
 <script setup>
-// import { useQuasar } from "quasar";
 import { computed, onMounted, ref } from "vue";
 import utils from "../utils/utils.js";
 
-// const starCount = ref(0);
 const slide = ref(1);
 
 const props = defineProps({
@@ -197,10 +195,6 @@ const props = defineProps({
 const starCount = computed(() => {
   return props.hoteis.stars;
 });
-
-// onMounted(() => {
-//   starCount.value = props.hoteis.stars;
-// });
 
 const hasAmenitie = (arrAmenitie, amenitie) => {
   return Boolean(arrAmenitie.find((am) => am.key === amenitie));

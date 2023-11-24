@@ -52,12 +52,18 @@ export const useHoteisStore = defineStore("hoteisStore", () => {
     hotelDetails.value = hotel;
   }
 
+  function clearSelectedHoteis() {
+    selectedHoteis.value = [];
+  }
+
   async function getSelectedHoteis() {
-    debugger;
     let hts = selectedCity.value
-      ? JsonHoteis.filter((c) => c.placeId === selectedCity.value.id)[0].hotels
+      ? JsonHoteis.filter((c) => c.placeId === selectedCity.value.id)[0]?.hotels
       : fullSelectedHoteis.value;
-    debugger;
+    if (!hts || hts?.length === 0) {
+      clearSelectedHoteis();
+      return;
+    }
     if (filterBy.value === "Recomendados") {
       hts = hts.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
     }
@@ -66,7 +72,6 @@ export const useHoteisStore = defineStore("hoteisStore", () => {
     }
     setFullSelectedHoteis(hts);
     setLotesHoteis(utils.chunkArray(hts, 10));
-    debugger;
     setSelectedHoteis(lotesHoteis.value[0]);
   }
 
@@ -89,6 +94,7 @@ export const useHoteisStore = defineStore("hoteisStore", () => {
     setSelectedHoteis,
     setLotesHoteis,
     setHotelDetails,
+    clearSelectedHoteis,
     getSelectedHoteis,
     getHotelDetails,
   };
