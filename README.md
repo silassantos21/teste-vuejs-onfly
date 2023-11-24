@@ -3,20 +3,20 @@
 Teste de busca e componentização, usando VueJS, Quasar
 
 <p align="center">
-  <img src="~assets/onfly-logo.png.png" alt="Teste de busca e componentização, usando VueJS e Quasar, pela OnFly" width="114" height="114">
+  <img src="./public/images/onfly-logo.png" alt="Teste de busca e componentização, usando VueJS e Quasar, pela OnFly" width="114" height="114">
 </p>
 
 <h3 align="center">Enunciado:</h3>
 
 <p align="left">
   <div>
-    <img width="100%" height="auto" style="border-radius: 10px;" src="~assets/Enunciado1.png" alt="Enunciado1" >
+    <img width="100%" height="auto" style="border-radius: 10px;" src="./public/images/Enunciado1.png" alt="Enunciado1" >
   <div>
   <div>
-    <img width="100%" height="auto" style="border-radius: 10px;" src="~assets/Enunciado2.PNG" alt="Enunciado2" >
+    <img width="100%" height="auto" style="border-radius: 10px;" src="./public/images/Enunciado2.PNG" alt="Enunciado2" >
   <div>
   <div>
-    <img width="100%" height="auto" style="border-radius: 10px;" src="~assets/Enunciado3.PNG" alt="Enunciado3" >
+    <img width="100%" height="auto" style="border-radius: 10px;" src="./public/images/Enunciado3.PNG" alt="Enunciado3" >
   <div>
 </p>
 
@@ -24,10 +24,10 @@ Teste de busca e componentização, usando VueJS, Quasar
 
 <p align="center">
   <div>
-    <img width="100%" height="auto" style="border-radius: 10px;" src="~assets/Caprtura1.png" alt="TelaPrincipal" >
+    <img width="100%" height="auto" style="border-radius: 10px;" src="./public/images/Caprtura1.png" alt="TelaPrincipal" >
   <div>
   <div>
-    <img width="100%" height="auto" style="border-radius: 10px;" src="~assets/Caprtura1.PNG" alt="Tela Detalhes" >
+    <img width="100%" height="auto" style="border-radius: 10px;" src="./public/images/Caprtura1.PNG" alt="Tela Detalhes" >
   <div>
 </p>
 
