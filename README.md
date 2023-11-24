@@ -3,7 +3,7 @@
 Teste de busca e componentização, usando VueJS, Quasar
 
 <p align="center">
-  <img src="./public/images/onfly-logo.png" alt="Teste de busca e componentização, usando VueJS e Quasar, pela OnFly" width="350" height="200">
+  <img src="./public/images/onfly-logo.png" alt="Teste de busca e componentização, usando VueJS e Quasar, pela OnFly" width="300" height="150">
 </p>
 
 <h3 align="center">Enunciado:</h3>
