@@ -10,7 +10,7 @@ Teste de busca e componentização, usando VueJS, Quasar
 
 <p align="left">
   <div>
-    <img width="100%" height="auto" style="border-radius: 10px;" src="./public/images/Enunciado1.png" alt="Enunciado1" >
+    <img width="100%" height="auto" style="border-radius: 10px;" src="./public/images/Enunciado1.PNG" alt="Enunciado1" >
   <div>
   <div>
     <img width="100%" height="auto" style="border-radius: 10px;" src="./public/images/Enunciado2.PNG" alt="Enunciado2" >
