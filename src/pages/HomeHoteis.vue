@@ -70,10 +70,12 @@
             <template v-slot:separator>
               <q-icon size="1.5em" name="chevron_right" color="primary" />
             </template>
-
             <q-breadcrumbs-el label="Início" />
             <q-breadcrumbs-el label="Hotéis" />
-            <q-breadcrumbs-el :label="'Hospedagem em ' + searchHotelCity" />
+            <q-breadcrumbs-el
+              v-if="searchHotelCity"
+              :label="'Hospedagem em ' + searchHotelCity"
+            />
           </q-breadcrumbs>
         </div>
         <div>
@@ -129,38 +131,21 @@
                   </q-item-label>
                 </q-item-section>
               </q-item>
-
-              <q-item
-                clickable
-                v-close-popup
-                @click="filterBy = 'Número de Estrelas'"
-              >
-                <q-item-section>
-                  <q-item-label
-                    :class="
-                      filterBy === 'Número de Estrelas' && 'text-light-blue'
-                    "
-                  >
-                    <q-icon
-                      v-show="filterBy === 'Número de Estrelas'"
-                      name="check"
-                      class="mr-md"
-                    />
-                    Número de Estrelas
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
             </q-list>
           </q-btn-dropdown>
         </div>
       </div>
-      <div
-        class="col-12 col-md-12 q-mb-md q-gutter-y-md"
-        v-if="selectedHoteis.length > 0"
-      >
-        <template v-for="(hotel, index) in selectedHoteis" :key="index">
-          <CardHotel :hoteis="hotel" :openModal="openHotelDetails" />
-        </template>
+      <div class="col-12 col-md-12 q-mb-md" v-if="selectedHoteis.length > 0">
+        <q-infinite-scroll @load="onLoad" :offset="250" class="q-gutter-y-md">
+          <template v-for="(hotel, index) in selectedHoteis" :key="index">
+            <CardHotel :hoteis="hotel" :openModal="openHotelDetails" />
+          </template>
+          <template v-slot:loading v-if="hasMoreHotels">
+            <div class="row justify-center q-my-md">
+              <q-spinner-dots color="light-blue" size="40px" />
+            </div>
+          </template>
+        </q-infinite-scroll>
       </div>
       <q-dialog v-model="cardDetails" position="right" maximized>
         <CardHotelDetails />
@@ -175,7 +160,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import JsonCidades from "../utils/place.json";
 import JsonHoteis from "../utils/hotel.json";
 import { storeToRefs } from "pinia";
@@ -184,17 +169,16 @@ import utils from "../utils/utils.js";
 import CardHotel from "../components/CardHotel.vue";
 import CardHotelDetails from "../components/CardHotelDetails.vue";
 
-const { selectedHoteis } = storeToRefs(useHoteisStore());
+const { lotesHoteis, selectedHoteis } = storeToRefs(useHoteisStore());
 const hoteisStore = useHoteisStore();
 
 const cardDetails = ref(false);
+const hasMoreHotels = ref(true);
 const refSelectCidade = ref("");
 const lorem = ref("Lorem ipsum dolor");
 const slide = ref(1);
 const stars = ref(1);
-const filterBy = ref("Recomendados");
 const name = ref("");
-const selectedCity = ref("");
 
 const filteredOptions = ref([]);
 
@@ -217,19 +201,64 @@ const searchHotelCity = computed({
   },
 });
 
+const filterBy = computed({
+  get() {
+    return hoteisStore.filterBy;
+  },
+  set(value) {
+    hoteisStore.setFilterBy(value);
+  },
+});
+
+watch(filterBy, () => {
+  debugger;
+  hoteisStore.getSelectedHoteis();
+});
+
+watch(filteredOptions, (value) => {
+  debugger;
+});
+
 onMounted(() => {
+  setHoteisFunction();
+});
+
+const setHoteisFunction = () => {
   if (selectedHoteis.value.length === 0) {
     hoteisStore.setSearchHotelCity("");
+  } else {
+    hoteisStore.setSelectedHoteis(lotesHoteis.value[0]);
   }
-});
+};
+
+const onLoad = (index, done, stop) => {
+  hoteisStore.setLotesHoteisIndex(index);
+  setTimeout(() => {
+    debugger;
+    if (lotesHoteis.value[index]) {
+      selectedHoteis.value = selectedHoteis.value.concat(
+        lotesHoteis.value[index]
+      );
+      hasMoreHotels.value = true;
+      done();
+    } else {
+      hasMoreHotels.value = false;
+    }
+  }, 2000);
+};
 
 const buscarHoteisCidade = async () => {
   const isValid = await refSelectCidade.value.validate();
   if (!isValid) return;
-  selectedCity.value = filteredOptions.value.filter(
+  utils.showLoadingWithMessageTimeout(
+    `Carregando hotéis na localidade ${searchHotelCity.value}`
+  );
+  const modelSelectCity = filteredOptions.value.filter(
     (c) => c.value === searchHotelCity.value
   )[0];
-  hoteisStore.getSelectedHoteis(selectedCity.value);
+  hoteisStore.setSelectedCity(modelSelectCity);
+  hoteisStore.getSelectedHoteis();
+  hasMoreHotels.value = true;
 
   // selectedHoteis.value = JsonHoteis.filter(
   //   (c) => c.placeId === selectedCity.value.id

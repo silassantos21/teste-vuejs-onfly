@@ -27,7 +27,6 @@
           }}</span>
         </div>
         <div class="row no-wrap items-start q-my-md">
-          <!-- <span class="text-caption text-grey q-mr-sm">8.3</span> -->
           <q-rating
             size="18px"
             readonly
@@ -179,10 +178,11 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+// import { useQuasar } from "quasar";
+import { computed, onMounted, ref } from "vue";
 import utils from "../utils/utils.js";
 
-const starCount = ref(0);
+// const starCount = ref(0);
 const slide = ref(1);
 
 const props = defineProps({
@@ -194,9 +194,13 @@ const props = defineProps({
   },
 });
 
-onMounted(() => {
-  starCount.value = props.hoteis.stars;
+const starCount = computed(() => {
+  return props.hoteis.stars;
 });
+
+// onMounted(() => {
+//   starCount.value = props.hoteis.stars;
+// });
 
 const hasAmenitie = (arrAmenitie, amenitie) => {
   return Boolean(arrAmenitie.find((am) => am.key === amenitie));

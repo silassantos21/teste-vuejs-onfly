@@ -52,11 +52,11 @@
         </template>
       </q-carousel>
     </q-card-section>
-    <q-card-section>
+    <q-card-section v-if="hotelDetails.amenities">
       <div class="text-h5 text-grey-7 q-pb-none">Facilidades do hotel</div>
     </q-card-section>
-    <q-separator inset color="grey-8" />
-    <q-card-section>
+    <q-separator inset color="grey-8" v-if="hotelDetails.amenities" />
+    <q-card-section v-if="hotelDetails.amenities">
       <div class="row no-wrap flex flex-center q-mt-sm q-mb-md">
         <div class="row q-gutter-x-lg">
           <div v-if="amenitieDetails(hotelDetails.amenities, 'WI_FI')">
@@ -152,7 +152,7 @@
           </div>
 
           <div v-if="amenitieDetails(hotelDetails.amenities, 'STEAM_ROOM')">
-            <q-icon name="sauna" size="xs" color="grey-7" />
+            <q-icon name="bath_public_large" size="xs" color="grey-7" />
             <span class="q-pl-sm text-subtitle1 text-grey-6">{{
               amenitieDetails(hotelDetails.amenities, "STEAM_ROOM")
             }}</span>
@@ -169,8 +169,11 @@
         />
       </div>
     </q-card-section>
-    <q-separator inset color="grey-8" />
-    <q-card-section class="max-width-description">
+    <q-separator inset color="grey-8" v-if="hotelDetails.description" />
+    <q-card-section
+      class="max-width-description"
+      v-if="hotelDetails.description"
+    >
       <div class="text-h5 text-grey-7 q-pb-sm">Conheça um pouco mais</div>
       <span class="text-subtitle1 text-grey-6">{{
         hotelDetails.description
@@ -184,10 +187,13 @@
 import { computed, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useHoteisStore } from "../stores/hoteis/hoteis";
+import utils from "../utils/utils.js";
+
 const { hotelDetails } = storeToRefs(useHoteisStore());
 
 const starCount = ref(0);
 const slide = ref(1);
+let timer;
 
 const amenitieDetails = (arrAmenitie, amenitie) => {
   return arrAmenitie
@@ -214,6 +220,10 @@ const ratingString = computed(() => {
 });
 
 onMounted(() => {
+  utils.showLoadingWithMessageTimeout(
+    `Carregando detalhes do hotel ${hotelDetails.value.name}`,
+    1500
+  );
   starCount.value = hotelDetails.value.stars;
 });
 </script>
