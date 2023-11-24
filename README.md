@@ -27,7 +27,7 @@ Teste de busca e componentização, usando VueJS, Quasar
     <img width="100%" height="auto" style="border-radius: 10px;" src="./public/images/Caprtura1.PNG" alt="TelaPrincipal" >
   <div>
   <div>
-    <img width="100%" height="auto" style="border-radius: 10px;" src="./public/images/Caprtura1.PNG" alt="Tela Detalhes" >
+    <img width="100%" height="auto" style="border-radius: 10px;" src="./public/images/Caprtura2.PNG" alt="Tela Detalhes" >
   <div>
 </p>
 
